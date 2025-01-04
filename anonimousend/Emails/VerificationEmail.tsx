@@ -15,4 +15,4 @@ export const VerificationEmail: React.FC<Readonly<EmailTemplateProps>> = ({
 );
 
 
-// i have copied the email template of the resend docs
+// basically this is the template for email which will be send to the user, by the way if i use supabase , then this work can be done in just simple lines of code.and more easily
