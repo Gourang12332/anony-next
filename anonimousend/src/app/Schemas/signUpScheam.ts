@@ -1,6 +1,6 @@
 import {z} from 'zod'
 // using zod validation becomes much easier at frontend side
-export const UsernamValidation = z
+export const    UsernamValidation = z
     .string()
     .min(2,"Username must be atleast 2 characters")
     .max(20,"Username must be less than 20 characters")

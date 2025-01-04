@@ -21,7 +21,19 @@ export async function POST(request:Request) {
        }
        const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
        if(existinguserByemail){
+         if(existinguserByemail.isVerified){
+            return Response.json({
+                success : false,
+                message :"User already verified"
+            } , {status : 400})
+         } else {
+            const hashpass = await bcrypt.hash(password, 10) 
+            existinguserByemail.password = hashpass;
+            existinguserByemail.verifyCode = verifyCode;
+            existinguserByemail.verifyCodeExpiry = new Date(Date.now() + 360000)  // added 3600000 hours in Date.now()
 
+            await existinguserByemail.save()
+         }
        } else{
         // if by email is not existing then , register the new man
          const hashedpass = bcrypt.hash(password,10)  
@@ -41,10 +53,20 @@ export async function POST(request:Request) {
          )
          await newUser.save()
        } 
-       // sending the verification mails to the user
+       // sending the verification mails to the user either after creating a new account or having unverified account , unverified accounts are teh accounts which have not typed the correct otp in time
        const emailResponse = await sendVerificationemails(email,username,verifyCode)
+       if(!emailResponse.success){
+        return Response.json({
+          success : false,
+          message : emailResponse.message
+        },{status : 500})
+       }
+       return Response.json({
+        success : false,
+        message : "User registered successfully , verify your email"
+      },{status : 500})
 
-    } catch (error) {
+          } catch (error) {
         console.error("This error is in the signup post request",error)
         return Response.json({
             success : false,
@@ -55,3 +77,6 @@ export async function POST(request:Request) {
 }
 
 // there is not a shit like const async respnse
+
+// check for the username as it is verified or not , so that we can tell that , either the man can pick that username or not , afterward we can check through mail.
+//check for the verificationby email , that is it is verified by mail or not , if verified return response verified but if not verified then create a new verificatio code for them to verify them if userbyemail is not existing , then create a new user

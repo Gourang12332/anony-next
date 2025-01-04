@@ -1,5 +1,7 @@
 
 import mongoose from "mongoose";
+
+
 type ConnectionObject = {
     isConnected?: number
 }
@@ -10,6 +12,7 @@ export default async function dbconnect () : Promise<void> {
         return ;
     } // to avoid performance choking we have checked that either firt there exist a connection or not
     try {
+    console.log(process.env.MONGODB_URI);
     const db = await mongoose.connect(process.env.MONGODB_URI || '' , {}) // connecting database
     console.log("I am printing the db itself : " + db);
 
