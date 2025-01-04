@@ -15,7 +15,7 @@ const MessageSchema : Schema<Message> = new Schema({
       default : Date.now
     }
 })
-// i have created interface with the name of Message using the Message data type , created a message schema,and now going to create an user schema
+// i have created interface with the name of Message using the Message data type , created a message schema,and now going to create an user schema (above)
 export interface User extends Document {
     username : string;
     email : string;
