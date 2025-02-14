@@ -27,10 +27,10 @@ export async function POST(request:Request) {
                 message :"User already verified"
             } , {status : 400})
          } else {
-            const hashpass = await bcrypt.hash(password, 10) 
+            const hashpass = await bcrypt.hash(password, 10) // 10 rounds of encryption
             existinguserByemail.password = hashpass;
             existinguserByemail.verifyCode = verifyCode;
-            existinguserByemail.verifyCodeExpiry = new Date(Date.now() + 360000)  // added 3600000 hours in Date.now()
+            existinguserByemail.verifyCodeExpiry = new Date(Date.now() + 360000)  // added 3600000 miliseconds that is one hour in Date.now()
 
             await existinguserByemail.save()
          }
