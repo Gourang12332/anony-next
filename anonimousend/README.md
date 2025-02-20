@@ -1,3 +1,4 @@
+This Project is still in the coding phase , as Frontend part is still remaining in the project , Backend is fully ready. 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
