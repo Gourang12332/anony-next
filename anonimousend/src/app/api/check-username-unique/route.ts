@@ -16,10 +16,13 @@ export async function GET(request:Request) {
     try { // username will be checked here by the url , extracting the query
          const {searchParams} = new URL(request.url) 
          const queryparams =  searchParams.get('username')
+
+         console.log("parameter got : " + queryparams);
          // to validate 
          
-         const result  = await usernameQuerySchema.safeParseAsync(queryparams)
+         const result  = await usernameQuerySchema.safeParseAsync({username : queryparams})
          console.log(" I am checking the result of safeparsing method in route.ts" + result);
+         console.log(result);
          console.log(result.success + " " + queryparams?.length);
          if(!result.success){
 
@@ -33,7 +36,7 @@ export async function GET(request:Request) {
             })
          }
          // result.data is carrying the username if the safeparsing goes successed and if failure then above code
-         const username = result.data;
+         const username = result.data.username;
         const existingVerifiedUser =  await UserModel.findOne({username , isVerified : true})
         if(existingVerifiedUser){
             return Response.json({

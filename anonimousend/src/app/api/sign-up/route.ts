@@ -20,6 +20,7 @@ export async function POST(request:Request) {
         })
        }
        const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
+       console.log("verify code:" + verifyCode)
        if(existinguserByemail){
          if(existinguserByemail.isVerified){
             return Response.json({
@@ -55,6 +56,7 @@ export async function POST(request:Request) {
        } 
        // sending the verification mails to the user either after creating a new account or having unverified account , unverified accounts are teh accounts which have not typed the correct otp in time
        const emailResponse = await sendVerificationemails(email,username,verifyCode)
+       console.log("Email : " + email + "Verify-Code : " + verifyCode);
        if(!emailResponse.success){
         return Response.json({
           success : false,

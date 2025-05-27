@@ -24,7 +24,7 @@ export interface User extends Document {
     verifyCodeExpiry : Date;
     isVerified : boolean,
     isAcceptingMessage : boolean;
-    message : Message[]
+    messages : Message[]
   }
   const UserSchema : Schema<User> = new Schema({
       username : {
@@ -59,7 +59,7 @@ export interface User extends Document {
         type : Boolean,    // make sure to store B that is Boolean
         required : false
     },
-    message :{
+    messages :{
         type : [MessageSchema],
     }
   })

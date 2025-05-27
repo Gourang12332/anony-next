@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import Link from 'next/link'
-import {useDebounceValue} from 'usehooks-ts'
+import {useDebounceCallback, useDebounceValue} from 'usehooks-ts'
 import { useToast } from "@/hooks/use-toast"
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { signUpSchema } from '@/app/Schemas/signUpScheam'
 import axios , {AxiosError} from 'axios'
 import { ApiResponse } from '@/app/types/ApiResponse'
@@ -31,20 +31,20 @@ import { Loader2 } from 'lucide-react'
 export default function page() {
 
   const {toast} = useToast()
-  // const router = useRouter()
+  const router = useRouter()
   const [username, setUsername] = useState(' ');
   const [usernameMessage, setUsernameMessage] = useState(' ');
   const [isCheckingUsername , setIsCheckingUsername] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
 
-  const debouncedUsername = useDebounceValue(username,500);  // this will update after every 500 miliseconds of the username alters  and it will be done automatically
+  const debouncedUsername = useDebounceCallback(setUsername,1000);  // this will update after every 500 miliseconds of the username alters  and it will be done automatically
   const form  = useForm<z.infer<typeof signUpSchema>>({
     resolver : zodResolver(signUpSchema),
     defaultValues : {
-      username : " ",
-      email :  " ",
-      password : " "
+      username : "",
+      email :  "",
+      password : ""
     }
   })
 
@@ -52,11 +52,11 @@ export default function page() {
   // checking username is there or not while typing
   useEffect(() =>{
     const usernamecheck = async () => {
-      if(debouncedUsername){
+      if(username){
         setIsCheckingUsername(true)   // right now checking is going on
         setUsernameMessage('')  // username message gotten be empty
         try {
-        const response = await axios.get(`/api/check-username-unique?username=${debouncedUsername}`)
+        const response = await axios.get(`/api/check-username-unique?username=${username}`)
         setUsernameMessage(response.data.message)
 
         console.log(response + "axios first time response in checking unique response")
@@ -73,7 +73,7 @@ export default function page() {
     }
 
     usernamecheck()
-  },[debouncedUsername])   // either of the try or catch block runs , usernamemessage would be set and ischecking going or not will be checked and in axios we do not require to jsonify the response;
+  },[username])   // either of the try or catch block runs , usernamemessage would be set and ischecking going or not will be checked and in axios we do not require to jsonify the response;
   
   // onSubmit method is required because submitHandler method taked this method to print its form data, 
   // submitHandler method gains the form data. and pass it using onSubmit method
@@ -92,13 +92,13 @@ export default function page() {
         description : response.data.message,
       })
 
-      // router.replace(`/verify/${username}`) 
+      router.replace(`/verify/${username}`) 
       
       // we have passsed the username in route only with searchparams and code will be entered by the user on that page , so the username from the searchparams and code from the input field will be collected on frontedn only and then sent to the /verify-code route
 
 
     console.log("response for issubmitting is  : " + response)
-
+    setIsSubmitting(false);
     } catch (error) {
       const axioserror =  error as AxiosError<ApiResponse>
       
@@ -129,14 +129,17 @@ export default function page() {
                 <Input placeholder="username" {...field} onChange={(e) =>{
                   field.onChange(e)   // here field will automatically updates its username fields and left all fields
 
-                  setUsername(e.target.value)
+                  debouncedUsername(e.target.value)
+                  console.log("username : " + e.target.value);
                 }} />
                 {/* filed can automatically updates the values once the submit button is pressed but if we want a continuous value then we can manage our individual username     and {...field} here we are passsing props at once*/}
                 
               </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
+              
+              {
+                isCheckingUsername && <Loader2 className='animate-spin'/>
+              }
+              <p className={`${usernameMessage === 'The username is unique' ? 'text-green-500' : 'text-red-500'}`}>{usernameMessage}</p>
               <FormMessage />
             </FormItem>
           )}
@@ -149,12 +152,10 @@ export default function page() {
             <FormItem>
               <FormLabel>email</FormLabel>
               <FormControl>
-                <Input placeholder="username" {...field}  />  
+                <Input placeholder="email" {...field}  />  
                
               </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
+              
               <FormMessage />
             </FormItem>
           )}
@@ -169,9 +170,7 @@ export default function page() {
                 <Input type='password' placeholder="username" {...field}  />
                 
               </FormControl>
-              <FormDescription>
-                This is your public display pass.
-              </FormDescription>
+              
               <FormMessage />
             </FormItem>
           )}

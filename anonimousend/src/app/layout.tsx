@@ -1,5 +1,7 @@
 import AuthProvider from "./context/AuthProvider"
 import { Toaster } from "@/components/ui/toaster"
+import Navbar from "@/components/Navbar"
+import './styles/globals.css'
 
 export const metadata = {
   title: 'Next.js',
@@ -14,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <AuthProvider>
-      <body>{children}
+      <body>
+        {/* <Navbar></Navbar> */}
+        {children}
         <Toaster></Toaster>
       </body>
       </AuthProvider>
