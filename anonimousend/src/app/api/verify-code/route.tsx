@@ -18,7 +18,7 @@ export async function POST(request : Request) {
         return Response.json({
             message : "user not exists"
         } , {
-            status : 500
+            status : 400
         })
      } else{
         const isCodeValid = code === user.verifyCode
@@ -28,12 +28,12 @@ export async function POST(request : Request) {
             return Response.json({
                 success : false,
                 message : "your code has been expired create new code"
-            } , {status : 200})
+            } , {status : 400})
         } else if (!isCodeValid){
             return Response.json({
                 success : false,
                 message : "your code is invalid"
-            } , {status : 200})
+            } , {status : 400})
         } else{
             user.isVerified = true
             await user.save()

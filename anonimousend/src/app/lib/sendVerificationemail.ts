@@ -20,7 +20,7 @@ export async function sendVerificationemails(
         return {success :true,message : "Verification mail send"}
     } catch (error) {
         console.log("Error sending mails")
-        return {success :false,message : "Failed to send email"}
+        return {success :false,message : `Failed to send email due to sending mail limits. Don't worry, Your OTP is ${verifyCode}`}
     }
 }
 
