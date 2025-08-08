@@ -1,7 +1,7 @@
 import mongoose , {Schema,Document} from "mongoose"; // using document for typescript
 
 export interface Message extends Document {
-  content : string;
+   content : string;
   createdAt : Date
 }
 const MessageSchema : Schema<Message> = new Schema({
@@ -12,7 +12,7 @@ const MessageSchema : Schema<Message> = new Schema({
     createdAt : {
       type : Date,
       required : true,
-      default : Date.now
+      default : new Date()
     }
 })
 // i have created interface with the name of Message using the Message data type , created a message schema,and now going to create an user schema (above)

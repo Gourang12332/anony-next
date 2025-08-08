@@ -25,7 +25,7 @@ export async function POST(request:Request) {
          if(existinguserByemail.isVerified){
             return Response.json({
                 success : false,
-                message :"User already verified"
+                message :"Verified User with this Email already exist"
             } , {status : 400})
          } else {
             const hashpass = await bcrypt.hash(password, 10) // 10 rounds of encryption
@@ -37,16 +37,16 @@ export async function POST(request:Request) {
          }
        } else{
         // if by email is not existing then , register the new man
-         const hashedpass = bcrypt.hash(password,10)  
-         const expirydate = new Date(); // using Date constructior to create the object
-         expirydate.setHours(expirydate.getHours() + 1); // expirydate.getHours method will return the current hours of the time stamp
+         const hashedpass = await bcrypt.hash(password,10)  
+         const verifyCodeExpiry = new Date(); // using Date constructior to create the object
+         verifyCodeExpiry.setHours(verifyCodeExpiry.getHours() + 1); // expirydate.getHours method will return the current hours of the time stamp
          const newUser = new UserModel(
            {
             username,
             email,
-            password,
+            password : hashedpass,
             verifyCode,
-            expirydate,
+            verifyCodeExpiry,
             isVerified : false,
             isAcceptingMessage : false,
             message : []
@@ -64,9 +64,9 @@ export async function POST(request:Request) {
         },{status : 500})
        }
        return Response.json({
-        success : false,
+        success : true,
         message : "User registered successfully , verify your email"
-      },{status : 500})
+      },{status : 200})
 
           } catch (error) {
         console.error("This error is in the signup post request",error)

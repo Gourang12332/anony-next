@@ -10,7 +10,8 @@ export const VerificationEmail: React.FC<Readonly<EmailTemplateProps>> = ({
   otp
 }) => (
   <div>
-    <h1>Welcome, {firstName} {otp}!</h1>
+    <h1>Welcome, {firstName}!</h1>
+    <p>This is your OTP {otp}</p>
   </div>
 );
 

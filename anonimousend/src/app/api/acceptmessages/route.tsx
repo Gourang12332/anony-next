@@ -4,6 +4,7 @@ import dbconnect from "@/app/lib/dbconnect";
 import UserModel from "@/app/models/User";
 import {User} from "next-auth"
 import { authOptions } from "../auth/[...nextauth]/options";
+import { boolean } from "zod";
 
 
 export async function POST(req : Request){
@@ -21,7 +22,8 @@ export async function POST(req : Request){
     } 
     
    try {
-    const acceptmessage = await req.json();
+    const {acceptmessage} = await req.json();
+    
     const userId = user._id;
     const updateduser = await UserModel.findByIdAndUpdate(
         userId,
@@ -34,7 +36,7 @@ export async function POST(req : Request){
             success : true,
             message : "successfully toggled switch"
         } , {
-            status : 500
+            status : 200
         })
     }else{
         return Response.json({

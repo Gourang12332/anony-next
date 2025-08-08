@@ -4,19 +4,17 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import Link from 'next/link'
-import {useDebounceCallback, useDebounceValue} from 'usehooks-ts'
+import { useDebounceCallback } from 'usehooks-ts'
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from 'next/navigation'
 import { signUpSchema } from '@/app/Schemas/signUpScheam'
-import axios , {AxiosError} from 'axios'
+import axios, { AxiosError } from 'axios'
 import { ApiResponse } from '@/app/types/ApiResponse'
-
 
 import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -25,169 +23,156 @@ import {
 import { Input } from "@/components/ui/input"
 import { Loader2 } from 'lucide-react'
 
-
-
-
-export default function page() {
-
-  const {toast} = useToast()
+export default function SignUpPage() {
+  const { toast } = useToast()
   const router = useRouter()
-  const [username, setUsername] = useState(' ');
-  const [usernameMessage, setUsernameMessage] = useState(' ');
-  const [isCheckingUsername , setIsCheckingUsername] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [username, setUsername] = useState('')
+  const [usernameMessage, setUsernameMessage] = useState('')
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
+  const debouncedUsername = useDebounceCallback(setUsername, 500)
 
-  const debouncedUsername = useDebounceCallback(setUsername,1000);  // this will update after every 500 miliseconds of the username alters  and it will be done automatically
-  const form  = useForm<z.infer<typeof signUpSchema>>({
-    resolver : zodResolver(signUpSchema),
-    defaultValues : {
-      username : "",
-      email :  "",
-      password : ""
+  const form = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: ""
     }
   })
 
-
-  // checking username is there or not while typing
-  useEffect(() =>{
-    const usernamecheck = async () => {
-      if(username){
-        setIsCheckingUsername(true)   // right now checking is going on
-        setUsernameMessage('')  // username message gotten be empty
+  useEffect(() => {
+    const checkUsername = async () => {
+      if (username) {
+        setIsCheckingUsername(true)
+        setUsernameMessage('')
         try {
-        const response = await axios.get(`/api/check-username-unique?username=${username}`)
-        setUsernameMessage(response.data.message)
-
-        console.log(response + "axios first time response in checking unique response")
-
+          const response = await axios.get(`/api/check-username-unique?username=${username}`)
+          setUsernameMessage(response.data.message)
         } catch (error) {
-          const axioserror =  error as AxiosError<ApiResponse>
-          setUsernameMessage(axioserror.response?.data.message ?? "Error fetching unique-username")
-
-        }
-        finally {
+          const axiosError = error as AxiosError<ApiResponse>
+          setUsernameMessage(axiosError.response?.data.message ?? "Error checking username")
+        } finally {
           setIsCheckingUsername(false)
         }
       }
     }
 
-    usernamecheck()
-  },[username])   // either of the try or catch block runs , usernamemessage would be set and ischecking going or not will be checked and in axios we do not require to jsonify the response;
-  
-  // onSubmit method is required because submitHandler method taked this method to print its form data, 
-  // submitHandler method gains the form data. and pass it using onSubmit method
+    checkUsername()
+  }, [username])
 
-
-  // as on submit got presss data came here using handlesubmit of form object of react hook form
-  const OnSubmit = async (data : z.infer<typeof signUpSchema>) =>{
+  const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsSubmitting(true)
-
-
-    console.log("onsubmitting data : " + data)
     try {
-    const response  = await axios.post(`/api/sign-up`)
+      const response = await axios.post(`/api/sign-up`, data)
+
       toast({
-        title : 'success',
-        description : response.data.message,
+        title: 'Success',
+        description: response.data.message,
       })
 
-      router.replace(`/verify/${username}`) 
-      
-      // we have passsed the username in route only with searchparams and code will be entered by the user on that page , so the username from the searchparams and code from the input field will be collected on frontedn only and then sent to the /verify-code route
-
-
-    console.log("response for issubmitting is  : " + response)
-    setIsSubmitting(false);
+      router.replace(`/verify/${data.username}`)
     } catch (error) {
-      const axioserror =  error as AxiosError<ApiResponse>
-      
+      const axiosError = error as AxiosError<ApiResponse>
       toast({
-        title : 'sign up Failure',
-        description : axioserror.response?.data.message  ?? "error submitting form check your code gourang",
-        variant : "destructive"
+        title: 'Sign up failed',
+        description: axiosError.response?.data.message ?? "Unexpected error",
+        variant: "destructive"
       })
-    }
-
-    finally {
+    } finally {
       setIsSubmitting(false)
     }
   }
 
-
   return (
-    <div>
-       <Form {...form}>
-          <form onSubmit={form.handleSubmit(OnSubmit)} className='space-y-6'>
-          <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="username" {...field} onChange={(e) =>{
-                  field.onChange(e)   // here field will automatically updates its username fields and left all fields
+    <div className="min-h-screen flex items-center justify-center bg-[#0f172a] text-white px-4">
+      <div className="w-full max-w-md bg-white text-black rounded-xl shadow-lg p-8">
+        <h1 className="text-3xl font-bold text-center mb-2">Join True Feedback</h1>
+        <p className="text-center text-sm text-gray-600 mb-6">
+          Sign up to start your anonymous adventure
+        </p>
 
-                  debouncedUsername(e.target.value)
-                  console.log("username : " + e.target.value);
-                }} />
-                {/* filed can automatically updates the values once the submit button is pressed but if we want a continuous value then we can manage our individual username     and {...field} here we are passsing props at once*/}
-                
-              </FormControl>
-              
-              {
-                isCheckingUsername && <Loader2 className='animate-spin'/>
-              }
-              <p className={`${usernameMessage === 'The username is unique' ? 'text-green-500' : 'text-red-500'}`}>{usernameMessage}</p>
-              <FormMessage />
-            </FormItem>
-          )}
-          />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 
-         <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>email</FormLabel>
-              <FormControl>
-                <Input placeholder="email" {...field}  />  
-               
-              </FormControl>
-              
-              <FormMessage />
-            </FormItem>
-          )}
-          />
-          <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type='password' placeholder="username" {...field}  />
-                
-              </FormControl>
-              
-              <FormMessage />
-            </FormItem>
-          )}
-          />
-             <Button type="submit" disabled={isSubmitting}>
-              {
-                isSubmitting ? <>
-                <Loader2 className = "mr-2 h-4 w-4">Please wait</Loader2>
-                </> : 'sign-up'
-              }
-             </Button>
-         </form>
-         <div><p>
-          Already a memeber ? 
-          <Link href={`/sign-in`}>SignIn</Link>
-          </p></div>
-         </Form>
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Choose a unique username"
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e)
+                        debouncedUsername(e.target.value)
+                      }}
+                    />
+                  </FormControl>
+                  {isCheckingUsername && <Loader2 className="animate-spin h-4 w-4 mt-1 text-blue-500" />}
+                  <p className={`text-sm mt-1 ${usernameMessage === 'The username is unique' ? 'text-green-600' : 'text-red-500'}`}>
+                    {usernameMessage}
+                  </p>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" placeholder="Create a strong password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-black text-white hover:bg-gray-900 transition"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Please wait
+                </>
+              ) : (
+                'Sign Up'
+              )}
+            </Button>
+          </form>
+        </Form>
+
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Already a member?{" "}
+          <Link href="/sign-in" className="text-blue-600 hover:underline">
+            Sign In
+          </Link>
+        </p>
+      </div>
     </div>
   )
 }

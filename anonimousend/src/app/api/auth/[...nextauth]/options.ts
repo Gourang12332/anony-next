@@ -3,6 +3,7 @@ import  CredentialsProvider  from "next-auth/providers/credentials";
 import bcrypt from "bcrypt"
 import dbconnect from "@/app/lib/dbconnect";
 import UserModel from "@/app/models/User";
+import {User} from "next-auth"
 
 
 export const authOptions : NextAuthOptions = {
@@ -13,16 +14,18 @@ export const authOptions : NextAuthOptions = {
             email: { label: "email", type: "text" },
             password: { label: "Password", type: "password" }
           },
-        async authorize(credentials : any) : Promise<any>{
+        async authorize(credentials : any) : Promise<User | null>{
             // to acess the above parameters , use credentials. identifiers
             await dbconnect()
             try {
+                console.log(credentials)
                 const user = await UserModel.findOne({
                     $or:[
-                        {email : credentials.identifiers},
-                        {username : credentials.identifiers}
+                        {email : credentials?.identifier},
+                        {password: credentials?.password}
                     ]
                 })
+                console.log(typeof(user?.password))
                 if(!user){
                     throw new Error("No user exist with this email")
                 } else{
@@ -31,7 +34,7 @@ export const authOptions : NextAuthOptions = {
                     } 
                     const ispasscorrect = await bcrypt.compare(credentials.password,user.password)
                     if(ispasscorrect){
-                       return user
+                       return user as User
                     }else{
                        throw new Error("Incorrect password")
                     }

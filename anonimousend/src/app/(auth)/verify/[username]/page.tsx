@@ -26,7 +26,7 @@ import {
 
 import { Input } from "@/components/ui/input"
 
-export default function page() {
+export default function Page() {
     const router = useRouter();
     const param = useParams();
     const{toast} = useToast();
@@ -61,30 +61,38 @@ export default function page() {
         }
     }
   return (
-    <div>
-      <div>Do your styling</div>
-        <div>
-            <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
-          <FormField
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+  <div className="text-2xl font-semibold text-gray-800 mb-4">Enter Verification Code</div>
+  <div className="w-full max-w-md bg-white p-6 rounded-xl shadow-md">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
           control={form.control}
           name="code"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Code</FormLabel>
+              <FormLabel className="text-sm font-medium text-gray-700">Code</FormLabel>
               <FormControl>
-                <Input placeholder= "Verification Code" {...field}></Input>
-                {/* filed can automatically updates the values once the submit button is pressed but if we want a continuous value then we can manage our individual username     and {...field} here we are passsing props at once*/}
-                
+                <Input
+                  placeholder="Verification Code"
+                  {...field}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
               </FormControl>
-                
               <FormMessage />
             </FormItem>
           )}
-          /> 
-         </form>
-         </Form>
-        </div>
-    </div>
+        />
+         <button
+          type="submit"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition"
+        >
+          Submit
+        </button>
+      </form>
+    </Form>
+  </div>
+</div>
+
   )
 }

@@ -8,7 +8,8 @@ export async function POST(req:Request) {
 
     try{
          const {username, content} = await req.json();
-         const user = await UserModel.findOne(username);
+         
+         const user = await UserModel.findOne({username});
          if(!user){
             return Response.json({
                 message : "user not found"
@@ -18,7 +19,7 @@ export async function POST(req:Request) {
          } else{
             const acceptingmessage = user.isAcceptingMessage;
             if(acceptingmessage){
-                user.message.push({content,createdAt : new Date()} as Message)   //  see without asserting it as Message there will be the typescript issue that this is not the message format , so u cannot push it to the user.message field
+                user.messages.push({content,createdAt : new Date()} as Message)   //  see without asserting it as Message there will be the typescript issue that this is not the message format , so u cannot push it to the user.message field
                 user.save();
 
                 return Response.json({

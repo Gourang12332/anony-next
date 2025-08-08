@@ -1,17 +1,21 @@
 import dbconnect from "@/app/lib/dbconnect";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/options";
+import { authOptions } from "../auth/[...nextauth]/options";
 import UserModel from "@/app/models/User";
+import { NextRequest } from "next/server";
 
 
-export async function DELETE(request : Request , {params} : {params : {messageid : string}})
+export async function DELETE(request : NextRequest)
 {
-    const messageid = params.messageid;
+    "@ts-expect-error"
+     const searchParams = request.nextUrl.searchParams;
+     const messageid = searchParams.get('messageId');
+   
     await dbconnect();
     const session = await getServerSession(authOptions);
-    const user = session?.user
-
-    if(!session || session.user){
+    const user = await session?.user
+    
+    if(!session || !session.user){
         return Response.json({
             success : false,
             message : "Not a valid user"
@@ -21,9 +25,10 @@ export async function DELETE(request : Request , {params} : {params : {messageid
 
     try {
         const result = await UserModel.updateOne(
-            {_id : user._id},{$pull : {messages : {_id : messageid}}}
+            {_id : user?._id},{$pull : {messages : {_id : messageid}}}
         )
-        if(result.modifiedCount == 0){
+        if(result?.modifiedCount == 0){
+            console.log("Empty array to delete messages")
             return Response.json({
                 success : false,
                 message : "Unable to delete the message"
@@ -37,7 +42,7 @@ export async function DELETE(request : Request , {params} : {params : {messageid
         {status : 200});
         }
     } catch (error) {
-        console.log("Error in the delete-message-route");
+        console.log("Error in the delete-message-route" + error);
         return Response.json({
                 success : false,
                 message : "Error deleting the message"

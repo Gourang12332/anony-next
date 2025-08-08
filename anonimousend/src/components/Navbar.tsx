@@ -5,6 +5,7 @@ import Link from 'next/link'  //
 import { useSession, signOut } from 'next-auth/react'   // usestate , usesession , they are the hooks and u need to make an instance of them always (variables)
 import {User} from 'next-auth'
 import { Button } from './ui/button'
+import { useRouter } from 'next/navigation'
 
 
 
@@ -13,20 +14,22 @@ import { Button } from './ui/button'
 export default function Navbar() {
     const {data : session} = useSession();
     const user:User = session?.user
+    const router = useRouter();
   return (
-    <div>
-      <a href="#">Mystery Message</a>
-      <div>
+    <div className='bg-blue-950 flex justify-around h-20 p-2 text-white'>
+      <a href="#" className='m-5 font-sans font-extrabold text-2xl'>Mystery Message</a>
+      <div className='m-5 font-extrabold'>
         {
             session ? (<>
             <p>Welcome {user.username}</p>
-            <Button onClick={() => signOut()}>Logout</Button>
+            {router.replace('/dashboard')}
+            {/* <Button onClick={() => signOut()}>Logout</Button> */}
             </>) :
             (
                 <>
-                <p>Not Autheticated</p>
+                {/* <p className='text-red-700'>Not Autheticated</p> */}
                 <Link href={'/sign-in'}>
-                <Button>Login</Button>
+                <Button >Login</Button>
                 </Link>
                 </>
             )
