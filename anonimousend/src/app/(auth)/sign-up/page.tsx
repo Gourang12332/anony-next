@@ -88,7 +88,7 @@ export default function SignUpPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0f172a] text-white px-4">
       <div className="w-full max-w-md bg-white text-black rounded-xl shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-center mb-2">Join True Feedback</h1>
+        <h1 className="text-3xl font-bold text-center mb-2">Join Mystery Message</h1>
         <p className="text-center text-sm text-gray-600 mb-6">
           Sign up to start your anonymous adventure
         </p>
