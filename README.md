@@ -2,7 +2,7 @@
 
 # 🕵️ Anonymous Message App
 
-[![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
 [![Shadcn/UI](https://img.shields.io/badge/UI-Shadcn%2FUI-blueviolet)](https://ui.shadcn.com/)
 [![Zod](https://img.shields.io/badge/Validation-Zod-brightgreen)](https://zod.dev/)
 [![Resend](https://img.shields.io/badge/Email-Resend-orange)](https://resend.com/)
