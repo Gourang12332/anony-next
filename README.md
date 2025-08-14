@@ -50,16 +50,7 @@ Users can create a **unique anonymous ID** and send messages to others **without
 ---
 
 ## 📂 Folder Structure
-anonimousend/
-│
-├── src/app/          # Next.js app router pages, API, models & layouts
-├── components/       # Reusable UI components
-├── lib/              # Utility functions & helpers
-├── public/           # Static assets
-├── styles/           # Global styles (Tailwind config)
-├── package.json
-└── README.md
-
+<pre> ``` anonimousend/ │ ├── src/app/ # Next.js app router pages, API, models & layouts ├── components/ # Reusable UI components ├── lib/ # Utility functions & helpers ├── public/ # Static assets ├── styles/ # Global styles (Tailwind config) ├── package.json └── README.md ``` </pre>
 
 ---
 
@@ -73,8 +64,7 @@ cd anony-next
 npm install
 
 ### 3️⃣ Setup Environment Variables
-MONGODB_URI=your_database_connection_string
-RESEND_API_KEY=your_resend_api_key
+<pre> ``` MONGODB_URI=your_database_connection_string RESEND_API_KEY=your_resend_api_key ``` </pre>
 
 ### 4️⃣ Run the Development Server
 npm run dev
