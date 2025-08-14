@@ -52,14 +52,13 @@ Users can create a **unique anonymous ID** and send messages to others **without
 ## 📂 Folder Structure
 anonimousend/
 │
-├── src/app/ # Next.js app router pages , API, models & layouts
-├── components/ # Reusable UI components
-├── lib/ # Utility functions & helpers
-├── public/ # Static assets
-├── styles/ # Global styles (Tailwind config)
+├── src/app/          # Next.js app router pages, API, models & layouts
+├── components/       # Reusable UI components
+├── lib/              # Utility functions & helpers
+├── public/           # Static assets
+├── styles/           # Global styles (Tailwind config)
 ├── package.json
 └── README.md
-
 
 
 ---
@@ -67,16 +66,15 @@ anonimousend/
 ## ⚙️ Installation & Setup
 
 ### 1️⃣ Clone the Repository
-git clone https://github.com/yourusername/anony-next.git
+git clone [https://github.com/Gourang12332/anony-next.git](https://github.com/Gourang12332/anony-next.git)
 cd anony-next
 
 ### 2️⃣ Install Dependencies
 npm install
 
 ### 3️⃣ Setup Environment Variables
-DATABASE_URL=your_database_connection_string
+MONGODB_URI=your_database_connection_string
 RESEND_API_KEY=your_resend_api_key
-NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 ### 4️⃣ Run the Development Server
 npm run dev
