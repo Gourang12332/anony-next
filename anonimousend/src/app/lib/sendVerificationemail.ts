@@ -17,7 +17,7 @@ export async function sendVerificationemails(
             subject: 'Hello world',
             react: VerificationEmail({firstName : username,otp : verifyCode}),
           });
-        return {success :true,message : "Verification mail send"}
+        return {success :true,message : `User Registered and Verification mail send. Your OTP is ${verifyCode}`}
     } catch (error) {
         console.log("Error sending mails")
         return {success :false,message : `Failed to send email due to sending mail limits. Don't worry, Your OTP is ${verifyCode}`}
