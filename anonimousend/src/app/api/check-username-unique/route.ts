@@ -13,6 +13,7 @@ const usernameQuerySchema = z.object({
 export async function GET(request:Request) {
    // request methods are already handled in next 15 
     await dbconnect()
+    console.log("db connected")
     try { // username will be checked here by the url , extracting the query
          const {searchParams} = new URL(request.url) 
          const queryparams =  searchParams.get('username')
