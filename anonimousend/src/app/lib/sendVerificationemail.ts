@@ -22,7 +22,7 @@ export async function sendVerificationemails(
 
     return {
       success: true,
-      message: `User Registered and Verification mail sent. Your OTP is ${verifyCode}`,
+      message: `User Registered and Verification mail sent.`,
     };
   } catch (error) {
     console.log("Error sending mail:", error);
