@@ -1,26 +1,35 @@
-import {resend} from './resend'
-import { VerificationEmail } from '../../../Emails/VerificationEmail'
-import { ApiResponse } from '../types/ApiResponse'
+import { Resend } from "resend";
+import { VerificationEmail } from "../../../Emails/VerificationEmail";
+import { ApiResponse } from "../types/ApiResponse";
 
-// have to send verification email
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendVerificationemails(
-    email : string,
-    username : string,
-    verifyCode : string,
-
+  email: string,
+  username: string,
+  verifyCode: string
 ): Promise<ApiResponse> {
-    try {
-         await resend.emails.send({
-            from: 'onboarding@resend.dev',
-            to: email,
-            subject: 'Hello world',
-            react: VerificationEmail({firstName : username,otp : verifyCode}),
-          });
-        return {success :true,message : `User Registered and Verification mail send. Your OTP is ${verifyCode}`}
-    } catch (error) {
-        console.log("Error sending mails")
-        return {success :false,message : `Failed to send email due to sending mail limits. Don't worry, Your OTP is ${verifyCode}`}
-    }
-}
+  try {
+    await resend.emails.send({
+      from: "MysteryMessage@resend.dev",
+      to: email,
+      subject: "Verification Code",
+      react: VerificationEmail({
+        firstName: username,
+        otp: verifyCode,
+      }),
+    });
 
+    return {
+      success: true,
+      message: `User Registered and Verification mail sent. Your OTP is ${verifyCode}`,
+    };
+  } catch (error) {
+    console.log("Error sending mail:", error);
+
+    return {
+      success: false,
+      message: `Failed to send email due to sending mail limits. Don't worry, Your OTP is ${verifyCode}`,
+    };
+  }
+}
