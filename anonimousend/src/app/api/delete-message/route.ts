@@ -20,7 +20,7 @@ export async function DELETE(request : NextRequest)
             success : false,
             message : "Not a valid user"
         },
-    {status : 400})
+    {status : 401})
     }
 
     try {
